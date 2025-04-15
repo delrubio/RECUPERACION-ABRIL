@@ -1,6 +1,5 @@
 package org.example;
 
-import javax.sound.sampled.UnsupportedAudioFileException;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -11,19 +10,14 @@ public class TicketMutxa {
 
     static private Set<Usuario> usuariosRegistrados;
     static private Set<Evento> listaEventos;
-
     public static Usuario comprador;
 
-    public static void main(String[] args) {
-
-
-        generarUsuarios(4);
-        insertarEvento("Paellas", LocalDate.of(2025,4,16), 2.0, "festival");
-        iniciarSesion();
-
+    public TicketMutxa(){
+        listaEventos = new HashSet<>();
+        usuariosRegistrados = new HashSet<>();
     }
 
-    public static void iniciarSesion(){
+    public void iniciarSesion(){
         System.out.println("*** BIENVENIDO A TICKETMUTCHA ***");
         System.out.print("   Usuario: ");
         String usu = teclado.next();
@@ -41,7 +35,7 @@ public class TicketMutxa {
 
     }
 
-    public static void insertarEvento(String nombre, LocalDate fecha, double precio, String tipo){
+    public void insertarEvento(String nombre, LocalDate fecha, double precio, String tipo){
 
         listaEventos = new HashSet<>();
 
@@ -58,7 +52,7 @@ public class TicketMutxa {
         }
     }
 
-    public static void generarUsuarios(int cantidad){
+    public void generarUsuarios(int cantidad){
         usuariosRegistrados = new HashSet<>();
         Usuario usu1 = new Usuario("David", "david123");
         Usuario usu2 = new Usuario("Patri", "patri123");
@@ -72,8 +66,8 @@ public class TicketMutxa {
     }
 
     public static void colaEntradas(){
-        for (int i = 0; i < usuariosRegistrados.size(); i++) {
-            System.out.println("Esperando en la cola. Quedan " + i + " personas...");
+        for (int i = 0; i < getUsuariosRegistrados().size(); i++) {
+            System.out.println("Esperando en la cola. Quedan " + (getUsuariosRegistrados().size() - i) + " personas...");
         }
     }
 
@@ -95,34 +89,26 @@ public class TicketMutxa {
             mapita.put(cont, eventos);
         }
 
-        System.out.println(" ");
         System.out.println("------------------------");
-        System.out.println(" ");
         System.out.print("Elige un evento: ");
 
-        int opc = 0;
+        int opc = teclado.nextInt();
 
-        try{
-            opc = teclado.nextInt();
-        }catch (InputMismatchException e1){
-            System.out.println("ERROR. Esto no es una opcion...");
-            verEventos();
-        }
+        colaEntradas();
 
         for (Map.Entry<Integer, Evento> mapita2 : mapita.entrySet()){
-            if (mapita2.getKey() == opc){
 
+            if (mapita2.getKey() == opc){
                 System.out.println("Cuantas entradas quieres?");
-                if (teclado.nextInt()>7){
+                int entradas = teclado.nextInt();
+                if (entradas > 7){
                     System.out.println("No puedes añadir más de 7 entradas...");
                     verEventos();
                 }else {
-                    comprador.anyadirAlCarrito(mapita2.getValue(), teclado.nextInt());
+                    comprador.anyadirAlCarrito(mapita2.getValue(), entradas);
                 }
             }
         }
-
-        comprador.verCarrito();
 
     }
 

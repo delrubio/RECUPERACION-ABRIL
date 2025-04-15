@@ -3,10 +3,12 @@ package org.example;
 import java.util.Scanner;
 
 public class Concierto {
+
     Scanner teclado = new Scanner(System.in);
     private String artista;
 
     public Concierto(){
+        setArtista();
     }
 
     public void setArtista(){
