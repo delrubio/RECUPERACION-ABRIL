@@ -17,41 +17,6 @@ public class TicketMutxa {
         usuariosRegistrados = new HashSet<>();
     }
 
-    public void iniciarSesion(){
-        System.out.println("*** BIENVENIDO A TICKETMUTCHA ***");
-        System.out.print("   Usuario: ");
-        String usu = teclado.next();
-        System.out.print("   Contraseña: ");
-        String pass = teclado.next();
-
-        comprador = new Usuario(usu, pass);
-
-        if (comprador.autenticarse(getUsuariosRegistrados())){
-            verEventos();
-        }else {
-            System.out.println("El usuario no es correcto.");
-            iniciarSesion();
-        }
-
-    }
-
-    public void insertarEvento(String nombre, LocalDate fecha, double precio, String tipo){
-
-        listaEventos = new HashSet<>();
-
-        if (tipo.toLowerCase().matches(EVENTOS[0])){
-            Evento eventoNuevo = new Evento(nombre, fecha, precio);
-            listaEventos.add(eventoNuevo);
-            Festival fest = new Festival();
-        } else if (tipo.toLowerCase().matches(EVENTOS[1])){
-            Evento eventoNuevo = new Evento(nombre, fecha, precio);
-            listaEventos.add(eventoNuevo);
-            Concierto concierto = new Concierto();
-        } else {
-            System.out.println("No existe el tipo de evento.");
-        }
-    }
-
     public void generarUsuarios(int cantidad){
         usuariosRegistrados = new HashSet<>();
         Usuario usu1 = new Usuario("David", "david123");
@@ -65,9 +30,45 @@ public class TicketMutxa {
 
     }
 
+    public void iniciarSesion(){
+        System.out.println("*** BIENVENIDO A TICKETMUTCHA ***");
+        System.out.print("   Usuario: ");
+        String usu = teclado.next();
+        System.out.print("   Contraseña: ");
+        String pass = teclado.next();
+
+        comprador = new Usuario(usu, pass);
+
+        if (comprador.autenticarse(getUsuariosRegistrados())){
+            verEventos();
+        }else {
+            System.out.println("ERROR. El usuario no es correcto.");
+            iniciarSesion();
+        }
+
+    }
+
+    public void insertarEvento(String nombre, LocalDate fecha, double precio, String tipo){
+
+        if (tipo.toLowerCase().matches(EVENTOS[0])){
+            Evento festival = new Festival(nombre, fecha, precio);
+            listaEventos.add(festival);
+        } else if (tipo.toLowerCase().matches(EVENTOS[1])){
+            Evento eventoNuevo = new Concierto(nombre, fecha, precio);
+            listaEventos.add(eventoNuevo);
+        } else {
+            System.out.println("ERROR. No existe el tipo de evento.");
+        }
+    }
+
     public static void colaEntradas(){
-        for (int i = 0; i < getUsuariosRegistrados().size(); i++) {
-            System.out.println("Esperando en la cola. Quedan " + (getUsuariosRegistrados().size() - i) + " personas...");
+        for (int i = getUsuariosRegistrados().size(); i > 0; i--) {
+            if (i == 1){
+                System.out.println(" -- Esperando en la cola. Quedan " + (i) + " personas...");
+                System.out.println("¡TU TURNO!");
+            }else {
+                System.out.println(" -- Esperando en la cola. Quedan " + (i) + " personas...");
+            }
         }
     }
 
@@ -77,12 +78,14 @@ public class TicketMutxa {
 
     public static void verEventos(){
 
-        System.out.println("Eventos Próximos...");
-        System.out.println(" ");
-
         Map<Integer, Evento> mapita = new HashMap<>();
-
+        int opc = 0;
         int cont = 0;
+        int entradas = 0;
+
+        System.out.println("Eventos Próximos...");
+        System.out.println("------------------------");
+
         for (Evento eventos : listaEventos){
             cont++;
             System.out.println(cont  + " - " + eventos.getNombre() + " " + eventos.getFecha());
@@ -92,26 +95,31 @@ public class TicketMutxa {
         System.out.println("------------------------");
         System.out.print("Elige un evento: ");
 
-        int opc = teclado.nextInt();
+        opc = teclado.nextInt();
 
-        colaEntradas();
+        if (mapita.containsKey(opc)){
+            colaEntradas();
 
-        for (Map.Entry<Integer, Evento> mapita2 : mapita.entrySet()){
+            System.out.println("¿Cuantas entradas quieres? (máximo 7)");
+            entradas = teclado.nextInt();
 
-            if (mapita2.getKey() == opc){
-                System.out.println("Cuantas entradas quieres?");
-                int entradas = teclado.nextInt();
-                if (entradas > 7){
-                    System.out.println("No puedes añadir más de 7 entradas...");
-                    verEventos();
-                }else {
-                    comprador.anyadirAlCarrito(mapita2.getValue(), entradas);
-                }
+            if (entradas > 7){
+                System.out.println("ERROR. No puedes añadir más de 7 entradas...");
+                verEventos();
+            }else{
+                comprador.anyadirAlCarrito(mapita.get(opc), entradas);
             }
+        }else {
+            System.out.println("ERROR. Introduce un evento correcto...");
+            verEventos();
+
         }
 
     }
 
 //    public static Evento getEvento(int posicion){
+//        for (Evento eventillo : listaEventos){
+//            return eventillo;
+//        }
 //    }
 }

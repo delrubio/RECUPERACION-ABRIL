@@ -6,8 +6,7 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 @Getter
-public class Evento {
-
+public abstract class Evento {
     private String nombre;
     private LocalDate fecha;
     private double precio;

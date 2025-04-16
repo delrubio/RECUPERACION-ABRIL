@@ -1,5 +1,8 @@
 package org.example;
 
+import lombok.Getter;
+
+@Getter
 public enum MetodoPago {
     PAYPAL(0.5), BIZUM(1), APPLEPAY(1.5);
 

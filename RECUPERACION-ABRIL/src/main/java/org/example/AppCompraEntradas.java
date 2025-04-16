@@ -8,7 +8,7 @@ public class AppCompraEntradas {
         TicketMutxa appTickets = new TicketMutxa();
 
         appTickets.generarUsuarios(4);
-        appTickets.insertarEvento("Paellas", LocalDate.of(2025,4,16), 2.0, "festival");
+        appTickets.insertarEvento("Paellas", LocalDate.of(2025,4,16), 20, "festival");
         appTickets.iniciarSesion();
     }
 }
